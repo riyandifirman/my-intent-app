@@ -1,6 +1,7 @@
 package com.riyandifirman.myintentapp
 
 import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -22,6 +23,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         // Inisisasi button dengan id btn_move_activity_object
         val btnMoveWithObject: Button = findViewById(R.id.btn_move_activity_object)
         btnMoveWithObject.setOnClickListener(this)
+
+        // Inisisasi button dengan id btn_dial_number
+        val btnDialPhone: Button = findViewById(R.id.btn_dial_number)
+        btnDialPhone.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
@@ -55,6 +60,13 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 // Memasukkan data ke intent dengan key EXTRA_PERSON dan value person
                 moveWithObjectIntent.putExtra(MoveWithObjectActivity.EXTRA_PERSON, person)
                 startActivity(moveWithObjectIntent)
+            }
+
+            R.id.btn_dial_number -> {
+                val phoneNumber = "08123456789"
+                // Intent untuk melakukan panggilan telepon
+                val dialPhoneIntent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phoneNumber"))
+                startActivity(dialPhoneIntent)
             }
         }
     }
