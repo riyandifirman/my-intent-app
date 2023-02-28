@@ -6,8 +6,30 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
+import androidx.activity.result.contract.ActivityResultContracts
 
 class MainActivity : AppCompatActivity(), View.OnClickListener {
+
+    // Deklarasi variabel
+    private lateinit var tvResult: TextView
+
+    // Membuat variabel resultLauncher untuk menampung hasil dari activity MoveForResultActivity
+    private val resultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result -> // result adalah hasil dari activity MoveForResultActivity
+        // Jika result.resultCode sama dengan MoveForResultActivity.RESULT_CODE
+        if (result.resultCode == MoveForResultActivity.RESULT_CODE) {
+            // Membuat variabel selectedValue untuk menampung data yang dikirimkan dari MoveForResultActivity
+            val selectedValue = result.data?.getIntExtra(
+                // Key dari data yang dikirimkan dari MoveForResultActivity
+                MoveForResultActivity.EXTRA_SELECTED_VALUE, 0
+            )
+            // Menampilkan data yang dikirimkan dari MoveForResultActivity ke TextView
+            tvResult.text = "Hasil: $selectedValue"
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -27,6 +49,11 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         // Inisisasi button dengan id btn_dial_number
         val btnDialPhone: Button = findViewById(R.id.btn_dial_number)
         btnDialPhone.setOnClickListener(this)
+
+        val btnMoveForResult: Button = findViewById(R.id.btn_move_for_result)
+        btnMoveForResult.setOnClickListener(this)
+
+        tvResult = findViewById(R.id.tv_result)
     }
 
     override fun onClick(v: View?) {
@@ -67,6 +94,13 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                 // Intent untuk melakukan panggilan telepon
                 val dialPhoneIntent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phoneNumber"))
                 startActivity(dialPhoneIntent)
+            }
+
+            R.id.btn_move_for_result -> {
+                // Intent untuk membuka activity MoveForResultActivity
+                val moveForResultIntent = Intent(this@MainActivity, MoveForResultActivity::class.java)
+                // Memulai activity MoveForResultActivity dan menunggu hasilnya
+                resultLauncher.launch(moveForResultIntent)
             }
         }
     }
